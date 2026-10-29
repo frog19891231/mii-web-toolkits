@@ -1,0 +1,6 @@
+{
+"modules": [
+    "dice-roller",
+    "card-clash"
+]
+}
