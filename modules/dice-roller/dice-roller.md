@@ -1,6 +1,7 @@
 # 🎲 2D Toon 3D Dice Roller (`dice-roller`)
 
 `dice-roller` 是一個 **2D 卡通畫風 3D 物理投擲骰子彈窗組件**。
+`DiceRoller.open() 呼叫一個全螢幕動畫彈窗進行真實碰撞與彈跳模擬。`
 
 ---
 
