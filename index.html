@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WEB-TOOLKITS // 網頁嵌入式模組工具庫</title>
-    <!-- Tailwind CSS -->
+    <meta name="description" content="Web-Toolkits 是為網頁開發者打造的互動模組工具庫，可瀏覽、預覽並整合 JavaScript 網頁模組。">
+    <title>Web-Toolkits｜開發者的互動模組工具庫</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -18,180 +16,210 @@
                         cyber: {
                             black: '#0a0a0f',
                             card: '#12131c',
-                            border: '#1f2438',
-                            accent: '#6366f1',
-                            neon: '#10b981'
+                            border: '#34364a',
+                            accent: '#a5b4fc',
+                            neon: '#34d399'
                         }
                     }
                 }
             }
-        }
+        };
     </script>
     <style>
-        .grid-bg {
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
+        :root { color-scheme: dark; }
+        body {
+            background-color: #0a0a0f;
+            background-image:
+                linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .pixel-edge { box-shadow: 4px 4px 0 #050508; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
         }
     </style>
 </head>
-<body class="bg-cyber-black text-slate-100 min-h-screen grid-bg font-sans flex flex-col justify-between">
-
-    <!-- Header Navigation -->
-    <header class="border-b border-cyber-border bg-cyber-card/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-black">
+<body class="min-h-screen bg-cyber-black text-slate-100 font-sans flex flex-col">
+    <header class="sticky top-0 z-50 border-b-2 border-cyber-border bg-cyber-black/95">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+            <a href="./index.html" class="flex items-center gap-3" aria-label="Web-Toolkits 首頁">
+                <span class="w-9 h-9 border-2 border-indigo-300 bg-indigo-600 flex items-center justify-center text-white pixel-edge" aria-hidden="true">
                     <i class="fa-solid fa-cube"></i>
-                </div>
-                <span class="font-black text-lg tracking-wider text-slate-100">WEB-TOOLKITS<span class="text-indigo-500">.JS</span></span>
-            </div>
-            <div class="flex items-center gap-4 text-xs font-mono">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
-                    ● AUTO DISCOVERY ONLINE
                 </span>
-            </div>
+                <span class="font-black tracking-wide">WEB-TOOLKITS<span class="text-indigo-300">.JS</span></span>
+            </a>
+            <span class="hidden sm:inline-flex items-center gap-2 border border-emerald-700 bg-emerald-950/60 px-3 py-1.5 text-[11px] font-mono text-emerald-300">
+                <span class="w-2 h-2 bg-emerald-400"></span>
+                MODULE TOOLKIT FOR DEVELOPERS
+            </span>
         </div>
     </header>
 
-    <!-- Main Hero & Module Catalog -->
-    <main class="max-w-7xl mx-auto px-6 py-12 flex-1 w-full flex flex-col gap-10">
-        
-        <!-- Hero Section -->
-        <div class="text-center py-8 border-b border-cyber-border">
-            <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 mb-4">
-                開箱即用的輕量 Web 模組集合
+    <main class="max-w-7xl mx-auto w-full flex-1 px-5 sm:px-8 py-10 sm:py-14 flex flex-col gap-10">
+        <section class="border-b-2 border-cyber-border pb-10 sm:pb-12">
+            <p class="text-xs sm:text-sm font-mono tracking-[.2em] text-indigo-300 mb-4">WEB-TOOLKITS · MODULE LIBRARY</p>
+            <h1 class="max-w-4xl text-3xl sm:text-5xl font-black leading-tight text-white">
+                為 Web 開發者打造的互動模組工具庫
             </h1>
-            <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
-                輕量級模組，您只需在任何 HTML 頁面載入一行 `&lt;script&gt;`，即可為網頁注入互動組件。
+            <p class="mt-5 max-w-3xl text-sm sm:text-base leading-7 text-slate-300">
+                一站探索、預覽並整合 JavaScript 網頁模組。從 3D 骰子物理投擲、卡牌對戰動畫，到可分支的文字冒險，為你的專案加入可操作的互動功能。
             </p>
-        </div>
-
-        <!-- Toolkits Catalog Section -->
-        <div>
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xs font-mono font-bold tracking-widest text-indigo-400 uppercase flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group"></i> 模組目錄 (MODULE CATALOG)
-                </h2>
-                <span id="module-count" class="text-xs font-mono text-slate-500">掃描模組中...</span>
+            <div class="mt-6 flex flex-wrap gap-3 text-xs">
+                <span class="border border-cyber-border bg-cyber-card px-3 py-2 text-slate-300">互動模組預覽</span>
+                <span class="border border-cyber-border bg-cyber-card px-3 py-2 text-slate-300">API 與整合指南</span>
+                <span class="border border-cyber-border bg-cyber-card px-3 py-2 text-slate-300">獨立 JavaScript 模組</span>
             </div>
+            <a href="#catalog" class="mt-7 inline-flex items-center gap-2 border-2 border-indigo-300 bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                瀏覽模組庫 <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+            </a>
+        </section>
 
-            <!-- Dynamic Modules Grid -->
-            <div id="modules-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- 動態注入模組卡片 -->
+        <section id="catalog" aria-labelledby="catalog-heading">
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-5">
+                <div>
+                    <p class="text-xs font-mono tracking-[.18em] text-indigo-300">EXPLORE THE LIBRARY</p>
+                    <h2 id="catalog-heading" class="mt-1 text-xl sm:text-2xl font-bold text-white">瀏覽模組</h2>
+                </div>
+                <p id="module-count" class="text-xs font-mono text-slate-400" aria-live="polite">正在載入互動體驗…</p>
             </div>
-        </div>
+            <div id="modules-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" aria-live="polite"></div>
+        </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-cyber-border py-6 text-center text-xs text-slate-500 font-mono">
-        <p>© 2026 WEB-TOOLKITS ENGINE // OPEN SOURCE MIT LICENSE</p>
+    <footer class="border-t-2 border-cyber-border px-5 sm:px-8 py-5 text-center text-xs text-slate-400">
+        <p>Web-Toolkits · <a class="text-indigo-300 hover:text-white underline underline-offset-4" href="./LICENSE">MIT License</a></p>
     </footer>
 
-    <!-- Auto Discovery & Rendering Script -->
     <script>
-        // 本地靜態備援清單
-        const fallbackModules = ["dice-roller", "card-clash"];
+        function createTextElement(tagName, className, text) {
+            const element = document.createElement(tagName);
+            element.className = className;
+            element.textContent = text;
+            return element;
+        }
 
-        // 圖示與備援描述對照表
-        const moduleMeta = {
-            "dice-roller": {
-                name: "2D Toon 3D Dice Roller",
-                icon: "fa-dice-d6"
-            },
-            "card-clash": {
-                name: "Card Clash Animation",
-                icon: "fa-wand-magic-sparkles"
-            }
-        };
+        async function loadModuleMeta(moduleId) {
+            const mdUrl = "./modules/" + moduleId + "/" + moduleId + ".md";
+            try {
+                const response = await fetch(mdUrl);
+                if (!response.ok) throw new Error("說明文件無法讀取");
 
-        // 簡單解析 Markdown 取得第一段描述文字
-        function parseMarkdownDescription(mdText) {
-            if (!mdText) return "載入模組說明中...";
-            const lines = mdText.split('\n');
-            for (let line of lines) {
-                line = line.trim();
-                // 略過標題行 (# 開頭) 與空行
-                if (line && !line.startsWith('#') && !line.startsWith('---') && !line.startsWith('```')) {
-                    // 去除 markdown 粗體標記等
-                    return line.replace(/[*_`]/g, '').substring(0, 85) + '...';
+                const markdown = await response.text();
+                const match = markdown.match(/^```module-meta\s*([\s\S]*?)\s*```/);
+                if (!match) throw new Error("找不到 module-meta 區塊");
+
+                const meta = JSON.parse(match[1]);
+                const validDependencies = Array.isArray(meta.dependencies) && meta.dependencies.every(
+                    dependency => dependency &&
+                        typeof dependency.name === 'string' &&
+                        typeof dependency.version === 'string' &&
+                        typeof dependency.required === 'boolean'
+                );
+                if (
+                    meta.moduleId !== moduleId ||
+                    typeof meta.name !== 'string' || !meta.name.trim() ||
+                    typeof meta.summary !== 'string' || !meta.summary.trim() ||
+                    !validDependencies
+                ) {
+                    throw new Error("module-meta 欄位不完整或與模組 ID 不符");
                 }
+
+                const icon = typeof meta.icon === 'string' && /^fa-[a-z0-9-]+$/.test(meta.icon)
+                    ? meta.icon
+                    : 'fa-cube';
+
+                return { ...meta, icon, available: true };
+            } catch (error) {
+                console.warn("無法讀取模組 metadata：" + moduleId, error);
+                return {
+                    moduleId,
+                    name: moduleId,
+                    icon: 'fa-cube',
+                    summary: "這項互動體驗目前無法載入，請稍後再試。",
+                    dependencies: [],
+                    available: false
+                };
             }
-            return "開箱即用的 Web 互動小工具模組。";
+        }
+
+        function createModuleCard(moduleId, index, meta) {
+            const card = document.createElement('article');
+            card.className = "bg-cyber-card border-2 border-cyber-border p-5 sm:p-6 pixel-edge flex flex-col min-h-full";
+
+            const top = document.createElement('div');
+            top.className = "flex items-start justify-between gap-4";
+            const badgeClass = meta.available
+                ? "border border-emerald-700 bg-emerald-950/60 px-2.5 py-1 text-[10px] font-mono text-emerald-300"
+                : "border border-amber-700 bg-amber-950/60 px-2.5 py-1 text-[10px] font-mono text-amber-200";
+            const badgeText = meta.available
+                ? "互動體驗 " + String(index + 1).padStart(2, '0')
+                : "介紹暫缺";
+            const badge = createTextElement('span', badgeClass, badgeText);
+            const icon = document.createElement('i');
+            icon.className = "fa-solid " + meta.icon + " text-2xl text-indigo-300";
+            icon.setAttribute('aria-hidden', 'true');
+            top.append(badge, icon);
+
+            const heading = createTextElement('h3', "mt-5 text-lg font-bold text-white", meta.name);
+            const summary = createTextElement('p', "mt-4 text-sm leading-6 text-slate-300", meta.summary);
+
+            const actions = document.createElement('div');
+            actions.className = "mt-auto pt-6 flex flex-wrap gap-3";
+            const previewLink = document.createElement('a');
+            previewLink.href = "./modules/" + moduleId + "/" + moduleId + ".html";
+            previewLink.className = "inline-flex items-center gap-2 border-2 border-indigo-300 bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200";
+            previewLink.innerHTML = '<i class="fa-solid fa-play" aria-hidden="true"></i><span>立即體驗</span>';
+
+            const docsLink = document.createElement('a');
+            docsLink.href = "./modules/" + moduleId + "/" + moduleId + ".md";
+            docsLink.className = "inline-flex items-center gap-2 border-2 border-cyber-border px-4 py-2.5 text-xs font-bold text-slate-200 hover:border-indigo-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-200";
+            docsLink.innerHTML = '<i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>了解玩法</span>';
+
+            actions.append(previewLink, docsLink);
+            card.append(top, heading, summary, actions);
+            return card;
         }
 
         async function initPortal() {
-            const gridContainer = document.getElementById('modules-grid');
-            const countLabel = document.getElementById('module-count');
-
-            let rawModules = [];
+            const grid = document.getElementById('modules-grid');
+            const count = document.getElementById('module-count');
 
             try {
-                const res = await fetch('./modules.json');
-                if (res.ok) {
-                    const data = await res.json();
-                    rawModules = data.modules || [];
-                } else {
-                    throw new Error('modules.json fetch failed.');
-                }
-            } catch (err) {
-                console.warn('使用 Fallback 模組陣列:', err);
-                rawModules = fallbackModules;
-            }
+                const response = await fetch('./modules.json');
+                if (!response.ok) throw new Error("modules.json 回應狀態 " + response.status);
 
-            countLabel.textContent = `共載入 ${rawModules.length} 個模組`;
-            gridContainer.innerHTML = '';
-
-            for (let index = 0; index < rawModules.length; index++) {
-                const modId = rawModules[index];
-                const numStr = String(index + 1).padStart(2, '0');
-                const meta = moduleMeta[modId] || {
-                    name: modId.toUpperCase(),
-                    icon: 'fa-cube'
-                };
-
-                const targetUrl = `./modules/${modId}/${modId}.html`;
-                const scriptCdnUrl = `modules/${modId}/${modId}.js`;
-
-                // 嘗試讀取 modules/{modId}/README.md
-                let description = "載入模組說明中...";
-                try {
-                    const mdRes = await fetch(`./modules/${modId}/${modId}.md`);
-                    if (mdRes.ok) {
-                        const mdText = await mdRes.text();
-                        description = parseMarkdownDescription(mdText);
-                    } else {
-                        description = "暫無詳細說明文件。";
-                    }
-                } catch (e) {
-                    description = "暫無詳細說明文件。";
+                const data = await response.json();
+                if (!data || !Array.isArray(data.modules)) {
+                    throw new Error("modules.json 缺少 modules 陣列。");
                 }
 
-                const cardHtml = `
-                    <div class="bg-cyber-card border border-cyber-border hover:border-indigo-500/50 rounded-2xl p-6 flex flex-col justify-between gap-6 transition group">
-                        <div>
-                            <div class="flex justify-between items-start mb-4">
-                                <span class="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-2 py-1 rounded border border-emerald-800">#${numStr} MODULE</span>
-                                <i class="fa-solid ${meta.icon} text-2xl text-indigo-400 group-hover:rotate-12 transition transform"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-white mb-2">${meta.name}</h3>
-                            <p class="text-slate-400 text-xs leading-relaxed mb-4">
-                                ${description}
-                            </p>
-                        </div>
+                const moduleIds = [...new Set(data.modules.filter(
+                    id => typeof id === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)
+                ))];
 
-                        <div class="space-y-3">
-                            <a href="${targetUrl}" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 block text-center">
-                                <i class="fa-solid fa-arrow-right"></i> 前往預覽頁 (${modId}.html)
-                            </a>
-                            <div class="bg-cyber-black p-3.5 rounded-xl border border-cyber-border font-mono text-[10px] text-slate-400 overflow-x-auto">
-                                <code>&lt;script src="${scriptCdnUrl}"&gt;&lt;/script&gt;</code>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                gridContainer.innerHTML += cardHtml;
+                if (moduleIds.length === 0) {
+                    count.textContent = "目前沒有可展示的互動體驗";
+                    return;
+                }
+
+                const moduleMetas = await Promise.all(moduleIds.map(loadModuleMeta));
+                const fragment = document.createDocumentFragment();
+                moduleMetas.forEach((meta, index) => {
+                    fragment.appendChild(createModuleCard(moduleIds[index], index, meta));
+                });
+                grid.replaceChildren(fragment);
+                count.textContent = moduleIds.length + " 種互動體驗";
+            } catch (error) {
+                console.error("無法載入模組目錄：", error);
+                count.textContent = "互動體驗暫時無法載入";
+                const message = createTextElement(
+                    'p',
+                    'border-2 border-amber-700 bg-amber-950/40 p-5 text-sm leading-6 text-amber-100',
+                    "目前無法載入體驗目錄，請稍後重新整理頁面。"
+                );
+                grid.replaceChildren(message);
             }
         }
 

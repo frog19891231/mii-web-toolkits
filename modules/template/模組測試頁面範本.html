@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!--
+  模組預覽頁模板
+  使用方式：
+  1. 複製到 modules/{module-id}/{module-id}.html
+  2. 取代所有 {{...}} 項目。
+  3. 在依賴區加入模組所需的 CDN script，並載入同資料夾的 {module-id}.js。
+  4. 改寫「模組展示區」與 launchDemo()，實際呼叫新模組 API。
+  5. 這份模板不是模組，不要加入 modules.json。
+-->
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{MODULE_SUMMARY}}">
+    <title>{{MODULE_NAME}}｜模組預覽</title>
+
+    <!-- 共用頁面依賴：保留或依專案部署方式調整。 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        toolkit: {
+                            page: '#0A0A0F',
+                            surface: '#12131C',
+                            raised: '#1A1D2A',
+                            border: '#34364A',
+                            primary: '#4F46E5',
+                            'primary-hover': '#6366F1',
+                            accent: '#A5B4FC',
+                            text: '#F8FAFC',
+                            'text-secondary': '#CBD5E1',
+                            muted: '#94A3B8',
+                            success: '#10B981',
+                            warning: '#F59E0B',
+                            danger: '#F43F5E',
+                            shadow: '#050508'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --tk-page: #0A0A0F;
+            --tk-surface: #12131C;
+            --tk-raised: #1A1D2A;
+            --tk-border: #34364A;
+            --tk-primary: #4F46E5;
+            --tk-primary-hover: #6366F1;
+            --tk-accent: #A5B4FC;
+            --tk-text: #F8FAFC;
+            --tk-text-secondary: #CBD5E1;
+            --tk-muted: #94A3B8;
+            --tk-success: #10B981;
+            --tk-warning: #F59E0B;
+            --tk-danger: #F43F5E;
+            --tk-shadow: #050508;
+        }
+
+        body {
+            background-color: var(--tk-page);
+            color: var(--tk-text);
+            background-image:
+                linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .pixel-edge { box-shadow: 4px 4px 0 var(--tk-shadow); }
+
+        :focus-visible {
+            outline: 2px solid var(--tk-accent);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+
+    <!-- 模組依賴：在此加入必要外部函式庫，並確保先於模組腳本載入。 -->
+    <!-- <script src="https://example.com/dependency.js"></script> -->
+    <!-- 載入模組本身：將 {{MODULE_ID}} 替換成實際 ID。 -->
+    <!-- <script src="./{{MODULE_ID}}.js"></script> -->
+</head>
+
+<body class="min-h-screen bg-toolkit-page text-toolkit-text font-sans flex flex-col">
+    <header class="border-b-2 border-toolkit-border bg-toolkit-page/95">
+        <div class="mx-auto flex min-h-16 w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-3 sm:px-8">
+            <div class="flex items-center gap-3">
+                <!-- 複製到 modules/{module-id}/ 後，../../index.html 可返回首頁。 -->
+                <a href="../../index.html" class="inline-flex items-center gap-2 text-sm text-toolkit-text-secondary hover:text-white">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                    回到模組庫
+                </a>
+                <span class="text-slate-600" aria-hidden="true">/</span>
+                <span class="font-bold text-white">{{MODULE_NAME}}</span>
+            </div>
+            <span class="inline-flex items-center gap-2 border border-toolkit-border bg-toolkit-surface px-3 py-1.5 text-[11px] font-mono text-toolkit-accent">
+                <span class="h-2 w-2 bg-toolkit-success" aria-hidden="true"></span>
+                MODULE PREVIEW
+            </span>
+        </div>
+    </header>
+
+    <main class="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-5 py-8 sm:px-8 sm:py-12">
+        <section class="border-b-2 border-toolkit-border pb-7" aria-labelledby="page-title">
+            <p class="mb-3 text-xs font-mono tracking-[.2em] text-toolkit-accent">{{MODULE_CATEGORY}}</p>
+            <h1 id="page-title" class="max-w-4xl text-3xl font-black leading-tight text-white sm:text-4xl">
+                {{MODULE_NAME}}
+            </h1>
+            <p class="mt-4 max-w-4xl text-sm leading-7 text-toolkit-text-secondary sm:text-base">
+                {{MODULE_SUMMARY}}
+            </p>
+            <div class="mt-5 flex flex-wrap gap-2" aria-label="模組特色">
+                <span class="border border-toolkit-border bg-toolkit-surface px-3 py-2 text-xs text-toolkit-text-secondary">{{FEATURE_ONE}}</span>
+                <span class="border border-toolkit-border bg-toolkit-surface px-3 py-2 text-xs text-toolkit-text-secondary">{{FEATURE_TWO}}</span>
+                <span class="border border-toolkit-border bg-toolkit-surface px-3 py-2 text-xs text-toolkit-text-secondary">{{FEATURE_THREE}}</span>
+            </div>
+        </section>
+
+        <section aria-labelledby="demo-heading">
+            <div class="mb-4">
+                <p class="text-xs font-mono tracking-[.16em] text-toolkit-accent">TRY IT</p>
+                <h2 id="demo-heading" class="mt-1 text-xl font-bold text-white">互動展示</h2>
+                <p class="mt-2 text-sm leading-6 text-toolkit-muted">{{DEMO_INSTRUCTIONS}}</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+                <article class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-7 pixel-edge xl:col-span-2">
+                    <h3 class="text-lg font-bold text-white">{{DEMO_PANEL_TITLE}}</h3>
+                    <p class="mt-2 text-sm leading-6 text-toolkit-text-secondary">{{DEMO_PANEL_DESCRIPTION}}</p>
+
+                    <!-- 替換為模組專屬操作控制項及畫面。 -->
+                    <div id="module-demo" class="mt-5 min-h-48 border border-toolkit-border bg-toolkit-page p-4">
+                        <p class="text-sm text-toolkit-muted">在此加入模組的操作介面或主要視覺展示。</p>
+                    </div>
+
+                    <div class="mt-5 flex flex-wrap gap-3">
+                        <button id="demo-action" type="button" class="inline-flex items-center gap-2 border-2 border-toolkit-accent bg-toolkit-primary px-5 py-3 text-sm font-bold text-white hover:bg-toolkit-primary-hover">
+                            <i class="fa-solid fa-play" aria-hidden="true"></i>
+                            {{PRIMARY_ACTION}}
+                        </button>
+                        <button id="reset-demo" type="button" class="border-2 border-toolkit-border px-4 py-3 text-sm font-semibold text-toolkit-text-secondary hover:border-toolkit-accent hover:text-white">
+                            重設展示
+                        </button>
+                    </div>
+                    <p id="demo-status" class="mt-3 text-xs text-toolkit-muted" role="status" aria-live="polite">準備就緒</p>
+                </article>
+
+                <aside class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-6 pixel-edge" aria-labelledby="log-heading">
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-xs font-mono tracking-[.16em] text-toolkit-success">ACTIVITY LOG</p>
+                            <h3 id="log-heading" class="mt-1 font-bold text-white">操作紀錄</h3>
+                        </div>
+                        <button id="clear-log" type="button" class="border border-toolkit-border px-3 py-1.5 text-xs text-toolkit-text-secondary hover:text-white">
+                            清除
+                        </button>
+                    </div>
+                    <ol id="demo-log" class="mt-4 flex max-h-80 min-h-48 flex-col gap-2 overflow-y-auto border border-toolkit-border bg-toolkit-page p-3 font-mono text-xs leading-5 text-toolkit-text-secondary" aria-live="polite" aria-relevant="additions">
+                        <li class="text-toolkit-muted">等待操作。</li>
+                    </ol>
+                </aside>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <article class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-6">
+                <h2 class="font-bold text-white">操作流程</h2>
+                <ol class="mt-3 list-decimal list-inside space-y-2 text-sm leading-6 text-toolkit-text-secondary">
+                    <li>{{STEP_ONE}}</li>
+                    <li>{{STEP_TWO}}</li>
+                    <li>{{STEP_THREE}}</li>
+                </ol>
+            </article>
+
+            <article class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-6">
+                <h2 class="font-bold text-white">整合範例</h2>
+                <pre class="mt-3 overflow-x-auto border border-toolkit-border bg-toolkit-page p-4 text-xs leading-5 text-toolkit-text-secondary"><code>{{INTEGRATION_CODE}}</code></pre>
+                <a href="./{{MODULE_ID}}.md" class="mt-4 inline-flex items-center gap-2 text-sm text-toolkit-accent underline underline-offset-4 hover:text-white">
+                    查看完整使用說明
+                    <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                </a>
+            </article>
+        </section>
+    </main>
+
+    <footer class="border-t-2 border-toolkit-border px-5 py-5 text-center text-xs text-toolkit-muted sm:px-8">
+        <span>{{FOOTER_TEXT}}</span>
+    </footer>
+
+    <script>
+        const logList = document.getElementById('demo-log');
+        const demoStatus = document.getElementById('demo-status');
+
+        function addLog(message, isError) {
+            const item = document.createElement('li');
+            item.className = isError ? 'text-toolkit-danger' : 'text-toolkit-text-secondary';
+            item.textContent = '[' + new Date().toLocaleTimeString() + '] ' + message;
+            logList.appendChild(item);
+            logList.scrollTop = logList.scrollHeight;
+        }
+
+        // 將此函式改為呼叫模組 API，並以回呼或事件更新狀態與日誌。
+        function launchDemo() {
+            demoStatus.textContent = '請替換 launchDemo()，接上此模組的實際 API。';
+            addLog('模板尚未連接模組功能。', true);
+        }
+
+        document.getElementById('demo-action').addEventListener('click', launchDemo);
+
+        document.getElementById('reset-demo').addEventListener('click', () => {
+            demoStatus.textContent = '展示已重設。請依模組需求補上重設行為。';
+            addLog('展示已重設。');
+        });
+
+        document.getElementById('clear-log').addEventListener('click', () => {
+            logList.replaceChildren();
+            addLog('紀錄已清除。');
+        });
+    </script>
+</body>
+</html>
+

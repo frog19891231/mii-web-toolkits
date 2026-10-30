@@ -155,7 +155,7 @@
   let engine = null;
   let currentOptions = {};
 
-  // 動態注入 2D 美漫/卡通手繪風 (Toon/Cel Shading) CSS
+  // 動態注入與其他模組一致的深色遮罩、厚框面板與按鈕樣式
   function injectStyles() {
     if (document.getElementById('text-adventure-style')) return;
 
@@ -165,7 +165,7 @@
       .ta-modal-overlay {
         position: fixed;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(15, 23, 42, 0.85);
+        background: rgba(10, 10, 15, 0.75);
         backdrop-filter: blur(4px);
         z-index: 999999;
         display: flex;
@@ -179,44 +179,44 @@
         max-width: 850px;
         height: 90vh;
         max-height: 700px;
-        background: #fffcf2;
-        border: 4px solid #0f172a;
-        border-radius: 24px;
-        box-shadow: 10px 10px 0px #0f172a;
+        background: #ffffff;
+        border: 3px solid #1e293b;
+        border-radius: 1rem;
+        box-shadow: 4px 4px 0px #1e293b;
         display: flex;
         flex-direction: column;
         overflow: hidden;
         position: relative;
-        animation: ta-pop-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        animation: ta-pop-in 0.25s ease;
       }
       @keyframes ta-pop-in {
         0% { transform: scale(0.85); opacity: 0; }
         100% { transform: scale(1); opacity: 1; }
       }
       .ta-header {
-        background: #facc15;
+        background: #ffffff;
         padding: 14px 20px;
-        border-bottom: 4px solid #0f172a;
+        border-bottom: 3px solid #1e293b;
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-weight: 900;
         font-size: 1.25rem;
-        color: #0f172a;
+        color: #1e293b;
       }
       .ta-close-btn {
-        background: #ef4444;
+        background: #f43f5e;
         color: #ffffff;
-        border: 3px solid #0f172a;
-        border-radius: 12px;
-        padding: 4px 14px;
+        border: 3px solid #1e293b;
+        border-radius: 9999px;
+        padding: 6px 16px;
         cursor: pointer;
         font-weight: 900;
-        box-shadow: 3px 3px 0px #0f172a;
+        box-shadow: 3px 3px 0px #1e293b;
         transition: all 0.1s ease;
       }
-      .ta-close-btn:hover { background: #dc2626; }
-      .ta-close-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #0f172a; }
+      .ta-close-btn:hover { background: #e11d48; }
+      .ta-close-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #1e293b; }
       
       .ta-body {
         display: flex;
@@ -231,20 +231,20 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: #fef08a;
-        border-bottom: 4px solid #0f172a;
+        background: #f8fafc;
+        border-bottom: 3px solid #1e293b;
         overflow-y: auto;
         position: relative;
       }
       .ta-text-bubble {
         background: #ffffff;
-        border: 3px solid #0f172a;
-        border-radius: 16px;
+        border: 3px solid #1e293b;
+        border-radius: 1rem;
         padding: 18px 24px;
         font-size: 1.2rem;
         font-weight: 700;
-        color: #0f172a;
-        box-shadow: 5px 5px 0px #0f172a;
+        color: #1e293b;
+        box-shadow: 4px 4px 0px #1e293b;
         max-width: 90%;
         margin-bottom: 20px;
         text-align: center;
@@ -258,20 +258,23 @@
         max-width: 550px;
       }
       .ta-btn {
-        background: #38bdf8;
-        border: 3px solid #0f172a;
-        border-radius: 14px;
-        padding: 12px 20px;
-        font-size: 1.05rem;
-        font-weight: 800;
-        color: #0f172a;
+        background: #6366f1;
+        border: 3px solid #1e293b;
+        border-radius: 9999px;
+        padding: 10px 22px;
+        font-size: 1rem;
+        font-weight: 900;
+        color: #ffffff;
         cursor: pointer;
-        box-shadow: 4px 4px 0px #0f172a;
+        box-shadow: 3px 3px 0px #1e293b;
         transition: all 0.1s ease;
         text-align: center;
       }
-      .ta-btn:hover { background: #0ea5e9; color: #ffffff; }
-      .ta-btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0px #0f172a; }
+      .ta-btn:hover { background: #4f46e5; color: #ffffff; transform: translate(-1px, -1px); box-shadow: 5px 5px 0px #1e293b; }
+      .ta-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #1e293b; }
+      .ta-btn-success { background: #10b981; }
+      .ta-btn-success:hover { background: #059669; }
+      .ta-text-bubble.ta-complete { background: #dcfce7; border-color: #166534; }
       
       .ta-message-box {
         flex: 1;
@@ -280,12 +283,12 @@
         overflow-y: auto;
         font-size: 0.95rem;
         line-height: 1.6;
-        color: #334155;
+        color: #1e293b;
       }
       .ta-message-line {
         margin-bottom: 8px;
         padding-bottom: 6px;
-        border-bottom: 2px dashed #e2e8f0;
+        border-bottom: 1px solid #cbd5e1;
         display: flex;
         gap: 8px;
       }
@@ -353,7 +356,7 @@
 
         displayEl.innerHTML = `
           <div class="ta-text-bubble">${text}</div>
-          <button class="ta-btn" id="ta-next-btn" style="background:#f43f5e; color:#fff;">點擊繼續 ▶</button>
+          <button class="ta-btn" id="ta-next-btn">點擊繼續 ▶</button>
         `;
         document.getElementById('ta-next-btn').onclick = () => {
           engine.step();
@@ -382,8 +385,8 @@
 
       engine.on('onEnd', () => {
         displayEl.innerHTML = `
-          <div class="ta-text-bubble" style="background:#bbf7d0; border-color:#166534;">🎉 冒險順利結束！</div>
-          <button class="ta-btn" id="ta-finish-btn" style="background:#22c55e; color:#fff;">結束並返回</button>
+          <div class="ta-text-bubble ta-complete">🎉 冒險順利結束！</div>
+          <button class="ta-btn ta-btn-success" id="ta-finish-btn">結束並返回</button>
         `;
         document.getElementById('ta-finish-btn').onclick = () => {
           TextAdventure.close({ status: 'completed' });

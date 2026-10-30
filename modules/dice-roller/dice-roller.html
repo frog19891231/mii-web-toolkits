@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dice Roller Module Preview // WEB-TOOLKITS</title>
-    <!-- Tailwind CSS -->
+    <meta name="description" content="Dice Roller 互動預覽與完整參數測試台。">
+    <title>Dice Roller｜模組測試台</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 依賴庫 (Three.js, Cannon.js, Tone.js) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- 本模組 Core JS -->
     <script src="./dice-roller.js"></script>
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,111 +20,367 @@
                         cyber: {
                             black: '#0a0a0f',
                             card: '#12131c',
-                            border: '#1f2438',
-                            accent: '#6366f1'
+                            border: '#34364a',
+                            accent: '#a5b4fc'
                         }
                     }
                 }
             }
-        }
+        };
     </script>
+    <style>
+        :root { color-scheme: dark; }
+        body {
+            background-color: #0a0a0f;
+            background-image:
+                linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .pixel-edge { box-shadow: 4px 4px 0 #050508; }
+        input, select { color-scheme: dark; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition-duration: .01ms !important; }
+        }
+    </style>
 </head>
-<body class="bg-cyber-black text-slate-100 min-h-screen font-sans flex flex-col justify-between">
-
-    <!-- Header / Nav -->
-    <header class="border-b border-cyber-border bg-cyber-card/80 backdrop-blur sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+<body class="min-h-screen bg-cyber-black text-slate-100 font-sans">
+    <header class="border-b-2 border-cyber-border bg-cyber-black/95">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 min-h-16 py-3 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
-                <a href="../../index.html" class="text-slate-400 hover:text-white transition flex items-center gap-2 text-sm font-mono">
-                    <i class="fa-solid fa-arrow-left"></i> [返回主頁 PORTAL]
+                <a href="../../index.html" class="text-slate-300 hover:text-white text-sm font-mono inline-flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> 回到 Web-Toolkits
                 </a>
                 <span class="text-slate-600">/</span>
-                <span class="font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-dice-d6 text-indigo-400"></i> MODULE 01: DICE-ROLLER
-                </span>
+                <span class="font-bold text-white">3D 骰子投擲器</span>
             </div>
-            <span class="text-xs font-mono bg-emerald-950 text-emerald-400 px-2.5 py-1 rounded border border-emerald-800">
-                ● DEMO PAGE
+            <span class="inline-flex items-center gap-2 border border-amber-700 bg-amber-950/50 px-3 py-1.5 text-[11px] font-mono text-amber-200">
+                <span class="w-2 h-2 bg-amber-300"></span> 測試副本 · MODULE TEST COPY
             </span>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-4xl mx-auto px-6 py-12 flex-1 w-full flex flex-col gap-8">
-        
-        <div class="border-b border-cyber-border pb-6">
-            <h1 class="text-3xl font-black text-white mb-2 flex items-center gap-3">
-                🎲 2D Toon 3D Dice Roller
-            </h1>
-            <p class="text-slate-400 text-sm">
-                本頁面為 <code class="text-indigo-400">modules/dice-roller/</code> 的單獨展示與調試控制台。
+    <main class="max-w-7xl mx-auto w-full px-5 sm:px-8 py-8 sm:py-12 flex flex-col gap-8">
+        <section class="border-b-2 border-cyber-border pb-7">
+            <p class="text-xs font-mono tracking-[.2em] text-indigo-300 mb-3">DICE ROLLER PLAYGROUND</p>
+            <h1 class="text-3xl sm:text-4xl font-black text-white">試玩骰子模組，調整每個投擲參數</h1>
+            <p class="mt-4 max-w-4xl text-sm sm:text-base leading-7 text-slate-300">
+                選擇快速範例或自行設定骰子數量、六面點數、外觀與物理效果。投擲停止後先在彈窗檢視結果，再按「確認並關閉」；只有確認時，頁面才會收到完成回呼。
             </p>
-        </div>
-
-        <!-- Interactive Control Panel -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <!-- Quick Preset Roll Options -->
-            <div class="bg-cyber-card border border-cyber-border rounded-2xl p-6 flex flex-col gap-4">
-                <h2 class="text-xs font-mono font-bold text-indigo-400 tracking-wider uppercase flex items-center gap-2">
-                    <i class="fa-solid fa-bolt"></i> 快速預設測試 (Quick Presets)
-                </h2>
-                
-                <button onclick="DiceRoller.open(1)" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-between">
-                    <span>1D6 (預設 1~6 點)</span>
-                    <i class="fa-solid fa-play text-xs"></i>
-                </button>
-
-                <button onclick="DiceRoller.open(1, [2,2,2,4,4,4], onResult)" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-between">
-                    <span>1D6 (自訂骰面: 2, 2, 2, 4, 4, 4)</span>
-                    <i class="fa-solid fa-play text-xs"></i>
-                </button>
-
-                <button onclick="DiceRoller.open({ title: '2D6 雙骰對撞', count: 2, faces: [1,2,3,4,5,6], renderStyle: 0, onComplete: onResult })" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-between">
-                    <span>2D6 (雙骰卡通碰撞)</span>
-                    <i class="fa-solid fa-play text-xs"></i>
-                </button>
-
-                <button onclick="DiceRoller.open({ title: '真實風格塑膠骰', count: 1, renderStyle: 2, onComplete: onResult })" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition flex items-center justify-between">
-                    <span>1D6 (真實 3D 亮面塑膠風格)</span>
-                    <i class="fa-solid fa-play text-xs"></i>
-                </button>
+            <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                <span class="border border-cyber-border bg-cyber-card px-3 py-2 text-slate-300">Three.js 3D 顯示</span>
+                <span class="border border-cyber-border bg-cyber-card px-3 py-2 text-slate-300">Cannon.js 物理投擲</span>
+                <span class="border border-cyber-border bg-cyber-card px-3 py-2 text-slate-300">自訂骰面與主題</span>
+                <span class="border border-cyber-border bg-cyber-card px-3 py-2 text-slate-300">確認後回傳結果</span>
             </div>
+            <p id="module-status" class="mt-4 text-xs font-mono text-emerald-300" role="status">正在檢查模組與必要引擎…</p>
+        </section>
 
-            <!-- Output Log Console -->
-            <div class="bg-cyber-card border border-cyber-border rounded-2xl p-6 flex flex-col justify-between gap-4">
-                <h2 class="text-xs font-mono font-bold text-emerald-400 tracking-wider uppercase flex items-center gap-2">
-                    <i class="fa-solid fa-terminal"></i> 回傳結果日誌 (Callback Output)
-                </h2>
+        <section aria-labelledby="presets-heading">
+            <div class="mb-4">
+                <p class="text-xs font-mono tracking-[.16em] text-indigo-300">START HERE</p>
+                <h2 id="presets-heading" class="mt-1 text-xl font-bold text-white">快速範例</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                <article class="border-2 border-cyber-border bg-cyber-card p-5 pixel-edge flex flex-col">
+                    <h3 class="font-bold text-white">標準投擲</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-300">一顆標準骰，面值為 1 至 6。</p>
+                    <button type="button" data-preset="standard" class="mt-5 w-full border-2 border-indigo-300 bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-500">試投 1D6</button>
+                </article>
+                <article class="border-2 border-cyber-border bg-cyber-card p-5 pixel-edge flex flex-col">
+                    <h3 class="font-bold text-white">自訂骰面</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-300">六面配置為 2、2、2、4、4、4，展示非標準點數分布。</p>
+                    <button type="button" data-preset="custom-faces" class="mt-5 w-full border-2 border-amber-300 bg-amber-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-amber-500">試投特殊骰</button>
+                </article>
+                <article class="border-2 border-cyber-border bg-cyber-card p-5 pixel-edge flex flex-col">
+                    <h3 class="font-bold text-white">逐顆設定面值</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-300">兩顆骰子使用不同的六面配置，展示二維 faces 陣列。</p>
+                    <button type="button" data-preset="per-die" class="mt-5 w-full border-2 border-emerald-300 bg-emerald-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-600">試投雙骰</button>
+                </article>
+                <article class="border-2 border-cyber-border bg-cyber-card p-5 pixel-edge flex flex-col">
+                    <h3 class="font-bold text-white">外觀與物理</h3>
+                    <p class="mt-2 text-sm leading-6 text-slate-300">示範亮面材質與較高的彈跳效果。</p>
+                    <button type="button" data-preset="physics" class="mt-5 w-full border-2 border-purple-300 bg-purple-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-purple-600">試投彈跳骰</button>
+                </article>
+            </div>
+        </section>
 
-                <div id="demo-log" class="bg-cyber-black border border-cyber-border rounded-xl p-4 font-mono text-xs text-emerald-400 h-48 overflow-y-auto leading-relaxed">
-                    > 等待觸發投擲...
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+            <section class="xl:col-span-2 border-2 border-cyber-border bg-cyber-card p-5 sm:p-7 pixel-edge" aria-labelledby="custom-heading">
+                <div class="mb-6">
+                    <p class="text-xs font-mono tracking-[.16em] text-indigo-300">CUSTOM CONFIGURATION</p>
+                    <h2 id="custom-heading" class="mt-1 text-xl font-bold text-white">自訂投擲</h2>
+                    <p class="mt-2 text-sm text-slate-300">設定會傳入 <code class="text-indigo-200">DiceRoller.open(options)</code>。每組骰面必須剛好包含六個數字。</p>
                 </div>
 
-                <button onclick="clearLog()" class="text-xs text-slate-500 hover:text-slate-300 transition text-right">
-                    清空日誌 [Clear]
-                </button>
-            </div>
+                <form id="config-form" class="flex flex-col gap-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex flex-col gap-2 text-sm font-semibold text-slate-200">
+                            投擲標題
+                            <input id="title-input" type="text" maxlength="60" value="自訂骰子投擲" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm focus:border-indigo-300 focus:outline-none">
+                        </label>
+                        <label class="flex flex-col gap-2 text-sm font-semibold text-slate-200">
+                            骰子數量（1–10）
+                            <input id="count-input" type="number" min="1" max="10" step="1" value="2" required class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm focus:border-indigo-300 focus:outline-none">
+                        </label>
+                    </div>
 
+                    <label class="flex flex-col gap-2 text-sm font-semibold text-slate-200">
+                        骰面數值
+                        <input id="faces-input" type="text" value="1,2,3,4,5,6" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 font-mono text-sm focus:border-indigo-300 focus:outline-none" aria-describedby="faces-help">
+                        <span id="faces-help" class="text-xs font-normal leading-5 text-slate-400">一組面值會套用到所有骰子，例如 <code>1,2,3,4,5,6</code>。要逐顆設定時以分號分隔，例如 <code>1,2,3,4,5,6;2,2,2,4,4,4</code>。</span>
+                    </label>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <label class="flex flex-col gap-2 text-sm font-semibold text-slate-200">
+                            外觀樣式
+                            <select id="style-input" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm focus:border-indigo-300 focus:outline-none">
+                                <option value="0">0 · 卡通 Toon</option>
+                                <option value="1">1 · 黑白 Monochrome</option>
+                                <option value="2">2 · 亮面塑膠 Realistic</option>
+                                <option value="3">3 · 自訂配色 Custom</option>
+                            </select>
+                        </label>
+                        <fieldset id="theme-fields" class="hidden border border-cyber-border p-3">
+                            <legend class="px-1 text-xs font-semibold text-slate-300">自訂主題色（樣式 3）</legend>
+                            <div class="grid grid-cols-3 gap-3">
+                                <label class="flex flex-col gap-1 text-xs text-slate-300">骰面
+                                    <input id="theme-primary" type="color" value="#f59e0b" class="h-9 w-full border border-cyber-border bg-cyber-black">
+                                </label>
+                                <label class="flex flex-col gap-1 text-xs text-slate-300">點數
+                                    <input id="theme-text" type="color" value="#ffffff" class="h-9 w-full border border-cyber-border bg-cyber-black">
+                                </label>
+                                <label class="flex flex-col gap-1 text-xs text-slate-300">邊框
+                                    <input id="theme-border" type="color" value="#78350f" class="h-9 w-full border border-cyber-border bg-cyber-black">
+                                </label>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <fieldset class="border-t border-cyber-border pt-5">
+                        <legend class="px-2 text-sm font-bold text-white">物理參數</legend>
+                        <p class="mb-4 text-xs leading-5 text-slate-400">留在文件預設值時會使用模組預設設定。重力、起始高度、投擲速度、旋轉、方向與彈性都會影響動畫。</p>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <label class="flex flex-col gap-2 text-xs font-semibold text-slate-300">重力 gravity
+                                <input data-physics="gravity" type="number" step="1" value="-35" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm">
+                            </label>
+                            <label class="flex flex-col gap-2 text-xs font-semibold text-slate-300">起始高度 height
+                                <input data-physics="height" type="number" step="0.1" value="3.5" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm">
+                            </label>
+                            <label class="flex flex-col gap-2 text-xs font-semibold text-slate-300">投擲力道 impulseForce
+                                <input data-physics="impulseForce" type="number" step="0.5" value="16" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm">
+                            </label>
+                            <label class="flex flex-col gap-2 text-xs font-semibold text-slate-300">旋轉力道 torqueForce
+                                <input data-physics="torqueForce" type="number" step="1" value="30" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm">
+                            </label>
+                            <label class="flex flex-col gap-2 text-xs font-semibold text-slate-300">投擲角度 angleDeg
+                                <input data-physics="angleDeg" type="number" step="5" value="0" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm">
+                            </label>
+                            <label class="flex flex-col gap-2 text-xs font-semibold text-slate-300">彈性 restitution
+                                <input data-physics="restitution" type="number" min="0" max="1" step="0.05" value="0.65" class="border-2 border-cyber-border bg-cyber-black px-3 py-2.5 text-sm">
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button type="submit" class="inline-flex items-center gap-2 border-2 border-indigo-300 bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200">
+                            <i class="fa-solid fa-dice" aria-hidden="true"></i> 開啟自訂投擲
+                        </button>
+                        <button id="reset-form" type="button" class="border-2 border-cyber-border px-4 py-3 text-sm font-semibold text-slate-200 hover:border-slate-400">恢復預設值</button>
+                        <p id="form-message" class="text-xs text-amber-200" role="status"></p>
+                    </div>
+                </form>
+            </section>
+
+            <aside class="border-2 border-cyber-border bg-cyber-card p-5 sm:p-6 pixel-edge flex flex-col" aria-labelledby="log-heading">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-mono tracking-[.16em] text-emerald-300">CALLBACK MONITOR</p>
+                        <h2 id="log-heading" class="mt-1 text-lg font-bold text-white">結果與操作紀錄</h2>
+                    </div>
+                    <button id="clear-log" type="button" class="border border-cyber-border px-3 py-1.5 text-xs text-slate-300 hover:text-white">清除</button>
+                </div>
+                <p class="mt-3 text-xs leading-5 text-slate-400">日誌只會在使用者確認並關閉後收到完成結果；直接關閉投擲視窗不會觸發回呼。</p>
+                <ol id="demo-log" class="mt-4 min-h-64 max-h-[32rem] overflow-y-auto border border-cyber-border bg-cyber-black p-3 font-mono text-xs leading-5 text-emerald-300 flex flex-col gap-3" aria-live="polite" aria-relevant="additions">
+                    <li class="text-slate-500">等待操作。先選快速範例或設定一次自訂投擲。</li>
+                </ol>
+            </aside>
         </div>
 
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <article class="border-2 border-cyber-border bg-cyber-card p-5 sm:p-6">
+                <h2 class="font-bold text-white">使用流程</h2>
+                <ol class="mt-3 list-decimal list-inside space-y-2 text-sm leading-6 text-slate-300">
+                    <li>設定參數並開啟骰子視窗。</li>
+                    <li>按「播放投擲」，等待骰子停止。</li>
+                    <li>檢視每顆骰子的朝上點數。</li>
+                    <li>按「確認並關閉」觸發 <code class="text-indigo-200">onComplete(resultData)</code>；關閉叉號則取消，不回傳完成結果。</li>
+                </ol>
+            </article>
+            <article class="border-2 border-cyber-border bg-cyber-card p-5 sm:p-6">
+                <h2 class="font-bold text-white">整合呼叫範例</h2>
+                <pre class="mt-3 overflow-x-auto border border-cyber-border bg-cyber-black p-4 text-xs leading-5 text-slate-300"><code>DiceRoller.open({
+  title: "敏捷檢定",
+  count: 2,
+  faces: [1, 2, 3, 4, 5, 6],
+  renderStyle: 0,
+  physics: { gravity: -35, restitution: 0.65 },
+  onComplete(result) {
+    console.log(result.results, result.total);
+  }
+});</code></pre>
+                <a href="../dice-roller/dice-roller.md" class="mt-4 inline-flex items-center gap-2 text-sm text-indigo-300 underline underline-offset-4 hover:text-white">
+                    查看完整 API 與限制 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                </a>
+            </article>
+        </section>
     </main>
 
-    <footer class="border-t border-cyber-border py-6 text-center text-xs text-slate-500 font-mono">
-        WEB-TOOLKITS // MODULES / DICE-ROLLER
+    <footer class="border-t-2 border-cyber-border px-5 sm:px-8 py-5 text-center text-xs text-slate-400">
+        Web-Toolkits · Dice Roller test playground
     </footer>
 
     <script>
-        function onResult(res) {
-            const log = document.getElementById('demo-log');
-            log.innerHTML += `<br>> [${new Date().toLocaleTimeString()}] ${res.title} -> 點數: [${res.results.join(', ')}] (總和: ${res.total})`;
-            log.scrollTop = log.scrollHeight;
+        const logElement = document.getElementById('demo-log');
+        const formMessage = document.getElementById('form-message');
+        const styleInput = document.getElementById('style-input');
+
+        function addLog(message, kind) {
+            const item = document.createElement('li');
+            item.className = kind === 'error' ? 'text-rose-300' : 'text-emerald-300';
+            item.textContent = '[' + new Date().toLocaleTimeString() + '] ' + message;
+            logElement.appendChild(item);
+            logElement.scrollTop = logElement.scrollHeight;
         }
 
-        function clearLog() {
-            document.getElementById('demo-log').innerHTML = '> 等待觸發投擲...';
+        function launchDice(options, source) {
+            if (!window.DiceRoller) {
+                addLog('模組腳本未載入，請確認頁面以 HTTP(S) 開啟並可載入本地腳本。', 'error');
+                return;
+            }
+
+            formMessage.textContent = '';
+            addLog(source + '：已開啟投擲視窗。請在視窗中按「播放投擲」，結果出現後再確認。');
+            options.onComplete = function(result) {
+                addLog('完成回呼：' + JSON.stringify(result));
+            };
+            window.DiceRoller.open(options);
         }
+
+        function parseFaces(rawValue, count) {
+            const groups = rawValue.split(';').map(group => group.trim());
+            if (groups.some(group => !group)) throw new Error('骰面設定不可留空。');
+
+            const faceGroups = groups.map(group => {
+                const tokens = group.split(',').map(value => value.trim());
+                if (tokens.length !== 6 || tokens.some(value => value === '')) {
+                    throw new Error('每組骰面必須輸入剛好六個以逗號分隔的數字。');
+                }
+                const values = tokens.map(Number);
+                if (values.some(value => !Number.isFinite(value))) {
+                    throw new Error('骰面只能輸入有效數字。');
+                }
+                return values;
+            });
+
+            if (faceGroups.length !== 1 && faceGroups.length !== count) {
+                throw new Error('提供多組骰面時，組數必須與骰子數量相同。');
+            }
+            return faceGroups.length === 1 ? faceGroups[0] : faceGroups;
+        }
+
+        function readConfig() {
+            const count = Number(document.getElementById('count-input').value);
+            if (!Number.isInteger(count) || count < 1 || count > 10) {
+                throw new Error('骰子數量請設定為 1 到 10 的整數。');
+            }
+
+            const renderStyle = Number(styleInput.value);
+            const physics = {};
+            document.querySelectorAll('[data-physics]').forEach(input => {
+                const value = Number(input.value);
+                if (!Number.isFinite(value)) throw new Error(input.dataset.physics + ' 必須是有效數字。');
+                physics[input.dataset.physics] = value;
+            });
+            if (physics.restitution < 0 || physics.restitution > 1) {
+                throw new Error('彈性 restitution 請設定在 0 到 1 之間。');
+            }
+
+            const options = {
+                title: document.getElementById('title-input').value.trim() || count + 'D6 Roll',
+                count,
+                faces: parseFaces(document.getElementById('faces-input').value, count),
+                renderStyle,
+                physics
+            };
+            if (renderStyle === 3) {
+                options.customTheme = {
+                    primary: document.getElementById('theme-primary').value,
+                    text: document.getElementById('theme-text').value,
+                    border: document.getElementById('theme-border').value
+                };
+            }
+            return options;
+        }
+
+        document.getElementById('config-form').addEventListener('submit', event => {
+            event.preventDefault();
+            try {
+                launchDice(readConfig(), '自訂設定');
+            } catch (error) {
+                formMessage.textContent = error.message;
+                addLog('設定錯誤：' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('reset-form').addEventListener('click', () => {
+            document.getElementById('config-form').reset();
+            styleInput.dispatchEvent(new Event('change'));
+            formMessage.textContent = '';
+        });
+
+        styleInput.addEventListener('change', () => {
+            document.getElementById('theme-fields').classList.toggle('hidden', styleInput.value !== '3');
+        });
+
+        document.querySelectorAll('[data-preset]').forEach(button => {
+            button.addEventListener('click', () => {
+                const presets = {
+                    standard: {
+                        title: '標準 1D6',
+                        count: 1
+                    },
+                    'custom-faces': {
+                        title: '特殊骰面 2,2,2,4,4,4',
+                        count: 1,
+                        faces: [2, 2, 2, 4, 4, 4]
+                    },
+                    'per-die': {
+                        title: '逐顆自訂雙骰',
+                        count: 2,
+                        faces: [[1, 2, 3, 4, 5, 6], [2, 2, 2, 4, 4, 4]]
+                    },
+                    physics: {
+                        title: '塑膠風格彈跳骰',
+                        count: 1,
+                        renderStyle: 2,
+                        physics: { height: 5, impulseForce: 20, torqueForce: 38, restitution: 0.85 }
+                    }
+                };
+                launchDice(presets[button.dataset.preset], '快速範例');
+            });
+        });
+
+        document.getElementById('clear-log').addEventListener('click', () => {
+            logElement.replaceChildren();
+            addLog('紀錄已清除。');
+        });
+
+        document.getElementById('module-status').textContent =
+            window.DiceRoller && window.THREE && window.CANNON
+                ? '模組與 3D／物理引擎已載入。Tone.js 音效為選用功能。'
+                : '缺少必要腳本或引擎，請檢查網路連線及依賴載入。';
     </script>
 </body>
 </html>
-```eof
+

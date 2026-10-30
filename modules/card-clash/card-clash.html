@@ -1,114 +1,318 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CardClash - Web-Toolkits Preview</title>
+  <meta name="description" content="測試卡牌戰鬥模組的基本規則、自動碰撞與戰鬥結果回傳。">
+  <title>卡牌數值對戰｜模組預覽</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Outfit:wght@600;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            toolkit: {
+              page: '#0A0A0F', surface: '#12131C', raised: '#1A1D2A', border: '#34364A',
+              primary: '#4F46E5', 'primary-hover': '#6366F1', accent: '#A5B4FC',
+              text: '#F8FAFC', 'text-secondary': '#CBD5E1', muted: '#94A3B8',
+              success: '#10B981', warning: '#F59E0B', danger: '#F43F5E', shadow: '#050508'
+            }
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    body { font-family: 'Outfit', sans-serif; background: #0f172a; }
-    .bangers { font-family: 'Bangers', cursive; }
-    .toon-card {
-      background: #ffffff;
-      border: 4px solid #000000;
-      box-shadow: 8px 8px 0px #000000;
-      border-radius: 20px;
+    :root {
+      color-scheme: dark;
+      --tk-page: #0A0A0F; --tk-surface: #12131C; --tk-raised: #1A1D2A;
+      --tk-border: #34364A; --tk-primary: #4F46E5; --tk-primary-hover: #6366F1;
+      --tk-accent: #A5B4FC; --tk-text: #F8FAFC; --tk-text-secondary: #CBD5E1;
+      --tk-muted: #94A3B8; --tk-success: #10B981; --tk-warning: #F59E0B;
+      --tk-danger: #F43F5E; --tk-shadow: #050508;
+    }
+    body {
+      background-color: var(--tk-page);
+      color: var(--tk-text);
+      background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .pixel-edge { box-shadow: 4px 4px 0 var(--tk-shadow); }
+    :focus-visible { outline: 2px solid var(--tk-accent); outline-offset: 3px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
   </style>
-</head>
-<body class="min-h-screen text-slate-100 flex flex-col items-center justify-between p-6">
 
-  <!-- Header -->
-  <header class="w-full max-w-4xl flex justify-between items-center py-4 border-b border-slate-800">
-    <div class="flex items-center gap-3">
-      <span class="text-3xl">⚔️</span>
-      <div>
-        <h1 class="text-2xl font-black tracking-tight text-amber-400">CardClash</h1>
-        <p class="text-xs text-slate-400">web-toolkits / modules / card-clash</p>
+  <script src="./card-clash.js"></script>
+</head>
+<body class="min-h-screen bg-toolkit-page text-toolkit-text font-sans flex flex-col">
+  <header class="border-b-2 border-toolkit-border bg-toolkit-page/95">
+    <div class="mx-auto flex min-h-16 w-full max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-3 sm:px-8">
+      <div class="flex items-center gap-3">
+        <a href="../../index.html" class="inline-flex items-center gap-2 text-sm text-toolkit-text-secondary hover:text-white">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+          回到模組庫
+        </a>
+        <span class="text-slate-600" aria-hidden="true">/</span>
+        <span class="font-bold text-white">卡牌數值對戰</span>
       </div>
+      <span class="inline-flex items-center gap-2 border border-toolkit-border bg-toolkit-surface px-3 py-1.5 text-[11px] font-mono text-toolkit-accent">
+        <span class="h-2 w-2 bg-toolkit-success" aria-hidden="true"></span>
+        MODULE PREVIEW · TEST BUILD
+      </span>
     </div>
-    <a href="../../index.html" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs font-bold px-4 py-2 rounded-xl border-2 border-slate-700 transition-all">
-      🏠 返回主頁 Portal
-    </a>
   </header>
 
-  <!-- Main Box -->
-  <main class="w-full max-w-xl my-auto flex flex-col items-center toon-card text-slate-900 p-8 my-8">
-    <div class="bangers text-5xl tracking-wide text-amber-500 mb-2">CARD CLASH MODULE</div>
-    <p class="text-sm text-slate-600 font-bold text-center mb-6">
-      2D 美漫卡通手繪風卡牌對撞動畫模組 (IIFE 標準 API 封裝)
-    </p>
-
-    <!-- Controls -->
-    <div class="w-full flex flex-col gap-3">
-      <button onclick="launchDefaultClash()" class="w-full bg-amber-400 hover:bg-amber-300 text-black font-black py-3 rounded-2xl border-4 border-black shadow-[4px_4px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all text-lg cursor-pointer">
-        ⚔️ 啟動預設對戰 (Launch Default)
-      </button>
-
-      <button onclick="launchCustomClash()" class="w-full bg-indigo-400 hover:bg-indigo-300 text-black font-black py-3 rounded-2xl border-4 border-black shadow-[4px_4px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all text-lg cursor-pointer">
-        🐲 啟動 BOSS 討伐戰 (Auto Mode)
-      </button>
-    </div>
-
-    <!-- Event Log -->
-    <div class="w-full mt-6">
-      <div class="text-xs font-black text-slate-400 mb-2 uppercase tracking-wider">EVENT LOG (Callback Monitor)</div>
-      <div id="demo-log" class="w-full h-28 bg-slate-950 text-emerald-400 font-mono text-xs p-3 rounded-xl border-2 border-slate-800 overflow-y-auto leading-relaxed">
-        [System] 模組預覽頁面準備就緒...<br/>
+  <main class="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-5 py-8 sm:px-8 sm:py-12">
+    <section class="border-b-2 border-toolkit-border pb-7" aria-labelledby="page-title">
+      <p class="mb-3 text-xs font-mono tracking-[.2em] text-toolkit-accent">CARD BATTLE · COLLISION RULES</p>
+      <h1 id="page-title" class="max-w-4xl text-3xl font-black leading-tight text-white sm:text-4xl">卡牌數值對戰</h1>
+      <p class="mt-4 max-w-4xl text-sm leading-7 text-toolkit-text-secondary sm:text-base">
+        傳入雙方角色、碰撞規則與卡片樣式後，由模組內部反覆結算碰撞並呈現戰鬥；一方生命值歸零時回傳結果並關閉。
+      </p>
+      <div class="mt-5 flex flex-wrap gap-2" aria-label="模組特色">
+        <span class="border border-toolkit-border bg-toolkit-surface px-3 py-2 text-xs text-toolkit-text-secondary">雙方同時碰撞</span>
+        <span class="border border-toolkit-border bg-toolkit-surface px-3 py-2 text-xs text-toolkit-text-secondary">內部規則介面</span>
+        <span class="border border-toolkit-border bg-toolkit-surface px-3 py-2 text-xs text-toolkit-text-secondary">結果回呼與自動收尾</span>
       </div>
-    </div>
+    </section>
+
+    <section aria-labelledby="demo-heading">
+      <div class="mb-4">
+        <p class="text-xs font-mono tracking-[.16em] text-toolkit-accent">TRY IT</p>
+        <h2 id="demo-heading" class="mt-1 text-xl font-bold text-white">互動展示</h2>
+        <p class="mt-2 text-sm leading-6 text-toolkit-muted">啟動一般對戰或自動 Boss 戰。戰鬥在覆蓋介面中進行，結果與每次碰撞狀態會記錄於右側日誌。</p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <article class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-7 pixel-edge xl:col-span-2">
+          <h3 class="text-lg font-bold text-white">戰鬥情境</h3>
+          <p class="mt-2 text-sm leading-6 text-toolkit-text-secondary">先編輯雙方角色數值，再選擇手動或自動碰撞。未指定或找不到規則與卡片類型時，模組會使用 basic 預設值。</p>
+          <form id="battle-form" class="mt-5 grid grid-cols-1 gap-4 border border-toolkit-border bg-toolkit-page p-4 md:grid-cols-2">
+            <fieldset class="space-y-3 border border-toolkit-border bg-toolkit-surface p-4">
+              <legend class="px-2 font-bold text-toolkit-accent">玩家角色</legend>
+              <label class="block text-xs text-toolkit-text-secondary">名稱
+                <input id="player-name" name="playerName" type="text" value="勇者" maxlength="24" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-3 py-2 text-sm text-white">
+              </label>
+              <div class="grid grid-cols-3 gap-2">
+                <label class="text-xs text-toolkit-text-secondary">HP
+                  <input id="player-hp" name="playerHp" type="number" value="35" min="1" step="1" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-2 py-2 text-sm text-white">
+                </label>
+                <label class="text-xs text-toolkit-text-secondary">攻擊
+                  <input id="player-atk" name="playerAtk" type="number" value="9" min="0" step="1" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-2 py-2 text-sm text-white">
+                </label>
+                <label class="text-xs text-toolkit-text-secondary">防禦
+                  <input id="player-def" name="playerDef" type="number" value="2" min="0" step="1" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-2 py-2 text-sm text-white">
+                </label>
+              </div>
+              <label class="flex items-center justify-between gap-3 text-xs text-toolkit-text-secondary">卡片顏色
+                <input id="player-color" name="playerColor" type="color" value="#4F46E5" class="h-9 w-14 cursor-pointer border border-toolkit-border bg-toolkit-page p-1">
+              </label>
+            </fieldset>
+
+            <fieldset class="space-y-3 border border-toolkit-border bg-toolkit-surface p-4">
+              <legend class="px-2 font-bold text-toolkit-warning">敵方角色</legend>
+              <label class="block text-xs text-toolkit-text-secondary">名稱
+                <input id="enemy-name" name="enemyName" type="text" value="半獸人" maxlength="24" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-3 py-2 text-sm text-white">
+              </label>
+              <div class="grid grid-cols-3 gap-2">
+                <label class="text-xs text-toolkit-text-secondary">HP
+                  <input id="enemy-hp" name="enemyHp" type="number" value="30" min="1" step="1" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-2 py-2 text-sm text-white">
+                </label>
+                <label class="text-xs text-toolkit-text-secondary">攻擊
+                  <input id="enemy-atk" name="enemyAtk" type="number" value="7" min="0" step="1" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-2 py-2 text-sm text-white">
+                </label>
+                <label class="text-xs text-toolkit-text-secondary">防禦
+                  <input id="enemy-def" name="enemyDef" type="number" value="1" min="0" step="1" required class="mt-1 w-full border border-toolkit-border bg-toolkit-page px-2 py-2 text-sm text-white">
+                </label>
+              </div>
+              <label class="flex items-center justify-between gap-3 text-xs text-toolkit-text-secondary">卡片顏色
+                <input id="enemy-color" name="enemyColor" type="color" value="#F43F5E" class="h-9 w-14 cursor-pointer border border-toolkit-border bg-toolkit-page p-1">
+              </label>
+            </fieldset>
+          </form>
+          <div id="module-demo" class="mt-5 grid min-h-48 grid-cols-1 gap-4 border border-toolkit-border bg-toolkit-page p-4 sm:grid-cols-2">
+            <div class="border border-toolkit-border bg-toolkit-surface p-4">
+              <p class="text-xs font-mono tracking-wider text-toolkit-accent">SCENARIO 01</p>
+              <h4 class="mt-2 font-bold text-white">手動碰撞</h4>
+              <p class="mt-2 text-sm leading-6 text-toolkit-muted">沿用上方角色資料，逐次按下攻擊控制進程。</p>
+              <button id="demo-action" type="button" class="mt-4 inline-flex items-center gap-2 border-2 border-toolkit-accent bg-toolkit-primary px-5 py-3 text-sm font-bold text-white hover:bg-toolkit-primary-hover">
+                <i class="fa-solid fa-play" aria-hidden="true"></i>
+                啟動預設對戰
+              </button>
+            </div>
+            <div class="border border-toolkit-border bg-toolkit-surface p-4">
+              <p class="text-xs font-mono tracking-wider text-toolkit-warning">SCENARIO 02</p>
+              <h4 class="mt-2 font-bold text-white">自動碰撞</h4>
+              <p class="mt-2 text-sm leading-6 text-toolkit-muted">沿用上方角色資料，自動重複碰撞至戰鬥結束。</p>
+              <button id="boss-demo" type="button" class="mt-4 inline-flex items-center gap-2 border-2 border-toolkit-warning bg-toolkit-raised px-5 py-3 text-sm font-bold text-white hover:bg-toolkit-border">
+                <i class="fa-solid fa-dragon" aria-hidden="true"></i>
+                啟動 Boss 戰
+              </button>
+            </div>
+          </div>
+          <button id="reset-demo" type="button" class="mt-5 border-2 border-toolkit-border px-4 py-3 text-sm font-semibold text-toolkit-text-secondary hover:border-toolkit-accent hover:text-white">重設展示狀態</button>
+          <p id="demo-status" class="mt-3 text-xs text-toolkit-muted" role="status" aria-live="polite">準備就緒</p>
+        </article>
+
+        <aside class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-6 pixel-edge" aria-labelledby="log-heading">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-mono tracking-[.16em] text-toolkit-success">ACTIVITY LOG</p>
+              <h3 id="log-heading" class="mt-1 font-bold text-white">戰鬥回呼日誌</h3>
+            </div>
+            <button id="clear-log" type="button" class="border border-toolkit-border px-3 py-1.5 text-xs text-toolkit-text-secondary hover:text-white">清除</button>
+          </div>
+          <ol id="demo-log" class="mt-4 flex max-h-96 min-h-48 flex-col gap-2 overflow-y-auto border border-toolkit-border bg-toolkit-page p-3 font-mono text-xs leading-5 text-toolkit-text-secondary" aria-live="polite" aria-relevant="additions">
+            <li class="text-toolkit-muted">等待操作。</li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <article class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-6">
+        <h2 class="font-bold text-white">操作流程</h2>
+        <ol class="mt-3 list-decimal list-inside space-y-2 text-sm leading-6 text-toolkit-text-secondary">
+          <li>選擇一般對戰或 Boss 自動戰。</li>
+          <li>手動模式按下「ATTACK (PLAY)」逐次碰撞；自動模式會持續碰撞至戰鬥結束。</li>
+          <li>查看日誌中的碰撞傷害與最終勝者；模組完成後會自動關閉戰鬥介面。</li>
+        </ol>
+      </article>
+      <article class="border-2 border-toolkit-border bg-toolkit-surface p-5 sm:p-6">
+        <h2 class="font-bold text-white">整合範例</h2>
+        <pre class="mt-3 overflow-x-auto border border-toolkit-border bg-toolkit-page p-4 text-xs leading-5 text-toolkit-text-secondary"><code>CardClash.open({
+  rule: 'basic',
+  type: 'basic',
+  player: { name: '勇者', hp: 35, atk: 9, def: 2 },
+  enemy: { name: '半獸人', hp: 30, atk: 7, def: 1 },
+  onComplete(result) {
+    console.log(result.winner, result.rounds);
+  }
+});</code></pre>
+        <a href="../card-clash/card-clash.md" class="mt-4 inline-flex items-center gap-2 text-sm text-toolkit-accent underline underline-offset-4 hover:text-white">
+          查看正式模組使用說明
+          <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+        </a>
+      </article>
+    </section>
   </main>
 
-  <!-- Footer -->
-  <footer class="text-xs text-slate-500 font-bold">
-    Web-Toolkits Module Standard &copy; 2026
+  <footer class="border-t-2 border-toolkit-border px-5 py-5 text-center text-xs text-toolkit-muted sm:px-8">
+    Web-Toolkits · Card Clash test preview
   </footer>
 
-  <!-- 載入模組主程式 -->
-  <script src="card-clash.js"></script>
-
   <script>
-    function logMsg(msg) {
-      const logEl = document.getElementById('demo-log');
-      if (logEl) {
-        logEl.innerHTML += `${msg}<br/>`;
-        logEl.scrollTop = logEl.scrollHeight;
-      }
+    const logList = document.getElementById('demo-log');
+    const demoStatus = document.getElementById('demo-status');
+
+    function addLog(message, isError = false) {
+      const item = document.createElement('li');
+      item.className = isError ? 'text-toolkit-danger' : 'text-toolkit-text-secondary';
+      item.textContent = '[' + new Date().toLocaleTimeString() + '] ' + message;
+      logList.appendChild(item);
+      logList.scrollTop = logList.scrollHeight;
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.CardClash) {
-        logMsg('[System] window.CardClash 載入成功！');
-      } else {
-        logMsg('[Error] 找不到 window.CardClash。');
+    function readBattleInput() {
+      const form = document.getElementById('battle-form');
+      if (!form.reportValidity()) return null;
+
+      const value = (id) => document.getElementById(id).value;
+      if (!value('player-name').trim() || !value('enemy-name').trim()) {
+        demoStatus.textContent = '請輸入玩家與敵方名稱。';
+        addLog('角色名稱不可只包含空白。', true);
+        return null;
       }
-    });
+      return {
+        player: {
+          name: value('player-name').trim(), icon: '⚔️',
+          hp: Number(value('player-hp')), atk: Number(value('player-atk')), def: Number(value('player-def')),
+          color: value('player-color')
+        },
+        enemy: {
+          name: value('enemy-name').trim(), icon: '👺',
+          hp: Number(value('enemy-hp')), atk: Number(value('enemy-atk')), def: Number(value('enemy-def')),
+          color: value('enemy-color')
+        }
+      };
+    }
 
     function launchDefaultClash() {
-      if (!window.CardClash) return;
-      logMsg('[Action] 開啟預設對戰...');
+      if (!window.CardClash) {
+        demoStatus.textContent = '模組載入失敗。';
+        addLog('找不到 CardClash API。', true);
+        return;
+      }
+      const battle = readBattleInput();
+      if (!battle) return;
+      demoStatus.textContent = `${battle.player.name} 與 ${battle.enemy.name} 正在戰鬥。`;
+      addLog(`啟動 basic 手動戰鬥：${battle.player.name} vs ${battle.enemy.name}。`);
       window.CardClash.open({
-        title: 'HERO VS ORC',
-        player: { name: '勇者', icon: '⚔️', hp: 35, maxHp: 35, atk: 9, def: 2, color: '#ff4757' },
-        enemy: { name: '半獸人', icon: '👺', hp: 30, maxHp: 30, atk: 7, def: 1, color: '#2ed573' },
-        onImpact: (data) => logMsg(`[Impact] 勇者 -${data.playerDmg} HP | 怪物 -${data.enemyDmg} HP`),
-        onComplete: (res) => logMsg(`[Complete] 勝者: ${res.winner ? res.winner.toUpperCase() : 'DRAW'}`)
+        title: `${battle.player.name} VS ${battle.enemy.name}`,
+        rule: 'basic',
+        type: 'basic',
+        player: { ...battle.player, maxHp: battle.player.hp },
+        enemy: { ...battle.enemy, maxHp: battle.enemy.hp },
+        onImpact(data) {
+          addLog(`第 ${data.round} 次碰撞：${data.player.name} -${data.enemyDmg} HP，${data.enemy.name} -${data.playerDmg} HP。`);
+        },
+        onComplete(result) {
+          demoStatus.textContent = `戰鬥完成，共 ${result.rounds} 次碰撞。`;
+          addLog(`戰鬥結束：${result.winner.toUpperCase()} 勝，共 ${result.rounds} 次碰撞。`);
+        }
       });
     }
 
-    function launchCustomClash() {
-      if (!window.CardClash) return;
-      logMsg('[Action] 開啟 BOSS 自動討伐戰...');
+    function launchBossClash() {
+      if (!window.CardClash) {
+        demoStatus.textContent = '模組載入失敗。';
+        addLog('找不到 CardClash API。', true);
+        return;
+      }
+      const battle = readBattleInput();
+      if (!battle) return;
+      demoStatus.textContent = `${battle.player.name} 與 ${battle.enemy.name} 自動戰進行中。`;
+      addLog(`啟動 basic 自動戰鬥：${battle.player.name} vs ${battle.enemy.name}。`);
       window.CardClash.open({
-        title: 'EPIC DRAGON RAID',
-        player: { name: '聖騎士', icon: '🛡️', hp: 50, maxHp: 50, atk: 12, def: 4, color: '#70a1ff' },
-        enemy: { name: '遠古巨龍', icon: '🐲', hp: 60, maxHp: 60, atk: 14, def: 3, color: '#ff6b81' },
+        title: `${battle.player.name} VS ${battle.enemy.name}`,
+        rule: { id: 'basic' },
+        type: 'basic',
+        cardStyle: { outlineColor: '#1e293b', shadowColor: '#1e293b', hpBarColor: '#10b981' },
+        player: { ...battle.player, icon: '🛡️', maxHp: battle.player.hp },
+        enemy: { ...battle.enemy, icon: '🐲', maxHp: battle.enemy.hp },
         autoPlay: true,
         autoInterval: 700,
-        onImpact: (data) => logMsg(`[Impact] 聖騎士 HP: ${data.player.hp} | 巨龍 HP: ${data.enemy.hp}`),
-        onComplete: (res) => logMsg(`[Complete] 討伐戰結束！勝者: ${res.winner}`)
+        onImpact(data) {
+          addLog(`第 ${data.round} 次碰撞：${data.player.name} HP ${data.player.hp}，${data.enemy.name} HP ${data.enemy.hp}。`);
+        },
+        onComplete(result) {
+          demoStatus.textContent = `Boss 戰完成，共 ${result.rounds} 次碰撞。`;
+          addLog(`Boss 戰結束：${result.winner.toUpperCase()} 勝。`);
+        }
       });
+    }
+
+    document.getElementById('demo-action').addEventListener('click', launchDefaultClash);
+    document.getElementById('boss-demo').addEventListener('click', launchBossClash);
+    document.getElementById('reset-demo').addEventListener('click', () => {
+      if (window.CardClash) window.CardClash.close();
+      document.getElementById('battle-form').reset();
+      demoStatus.textContent = '角色數值已還原預設值。';
+      addLog('戰鬥已關閉，角色數值已還原預設值。');
+    });
+    document.getElementById('clear-log').addEventListener('click', () => {
+      logList.replaceChildren();
+      addLog('紀錄已清除。');
+    });
+    if (window.CardClash) addLog('CardClash 測試版載入完成。');
+    else {
+      demoStatus.textContent = '模組載入失敗。';
+      addLog('找不到 CardClash API。', true);
     }
   </script>
 </body>

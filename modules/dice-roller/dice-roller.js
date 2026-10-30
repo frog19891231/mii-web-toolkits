@@ -17,6 +17,18 @@
     let isRolling = false;
     let rollCheckTimeout = null;
     let isInitialized = false;
+    let animationFrameId = null;
+    let resizeListenerAttached = false;
+    let floorContactMaterial = null;
+
+    const DEFAULT_PHYSICS = Object.freeze({
+        gravity: -35,
+        height: 3.5,
+        impulseForce: 16.0,
+        torqueForce: 30.0,
+        angleDeg: 0,
+        restitution: 0.65
+    });
 
     let currentTask = {
         title: 'Dice Roll',
@@ -26,14 +38,7 @@
         onComplete: null,
         renderStyle: 0, // 0: Toon, 1: Monochrome, 2: Realistic, 3: Custom
         customTheme: { primary: '#6366f1', text: '#1e293b', border: '#1e293b' },
-        physics: {
-            gravity: -35,
-            height: 3.5,
-            impulseForce: 16.0,
-            torqueForce: 30.0,
-            angleDeg: 0,
-            restitution: 0.65
-        }
+        physics: Object.assign({}, DEFAULT_PHYSICS)
     };
 
     let synth, noise, audioInit = false;
@@ -108,7 +113,15 @@
     }
 
     function initEngine() {
-        if (isInitialized) return;
+        if (isInitialized) {
+            injectUI();
+            if (!resizeListenerAttached) {
+                window.addEventListener('resize', onResize);
+                resizeListenerAttached = true;
+            }
+            animate();
+            return;
+        }
         injectUI();
         const container = document.getElementById('dr-canvas-host');
 
@@ -142,10 +155,11 @@
 
         const floorMat = new CANNON.Material('floor');
         const diceMat = new CANNON.Material('dice');
-        world.addContactMaterial(new CANNON.ContactMaterial(diceMat, floorMat, { 
+        floorContactMaterial = new CANNON.ContactMaterial(diceMat, floorMat, {
             friction: 0.2, 
             restitution: currentTask.physics.restitution 
-        }));
+        });
+        world.addContactMaterial(floorContactMaterial);
 
         const floorBody = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: floorMat });
         floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
@@ -153,9 +167,9 @@
 
         updateViewBounds();
         window.addEventListener('resize', onResize);
-
-        animate();
+        resizeListenerAttached = true;
         isInitialized = true;
+        animate();
     }
 
     function updateViewBounds() {
@@ -279,7 +293,14 @@
     }
 
     function setupDice(diceSpecs) {
-        diceArray.forEach(d => { scene.remove(d.mesh); world.remove(d.body); });
+        diceArray.forEach(d => {
+            scene.remove(d.mesh);
+            world.remove(d.body);
+            d.mesh.material.forEach(material => {
+                if (material.map) material.map.dispose();
+                material.dispose();
+            });
+        });
         diceArray = [];
 
         const spacing = 1.8;
@@ -312,17 +333,23 @@
     }
 
     function animate() {
-        requestAnimationFrame(animate);
-        if (world) {
-            world.step(1 / 60);
-            diceArray.forEach(dice => {
-                dice.mesh.position.copy(dice.body.position);
-                dice.mesh.quaternion.copy(dice.body.quaternion);
-            });
-        }
-        if (renderer && scene && camera) {
-            renderer.render(scene, camera);
-        }
+        if (animationFrameId !== null) return;
+
+        const renderFrame = () => {
+            animationFrameId = requestAnimationFrame(renderFrame);
+            if (world) {
+                world.step(1 / 60);
+                diceArray.forEach(dice => {
+                    dice.mesh.position.copy(dice.body.position);
+                    dice.mesh.quaternion.copy(dice.body.quaternion);
+                });
+            }
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        };
+
+        animationFrameId = requestAnimationFrame(renderFrame);
     }
 
     function getTopFaceValue(dice) {
@@ -399,9 +426,7 @@
             currentTask.customTheme = options.customTheme || null;
             currentTask.onComplete = callback || null;
 
-            if (options.physics) {
-                currentTask.physics = Object.assign({}, currentTask.physics, options.physics);
-            }
+            currentTask.physics = Object.assign({}, DEFAULT_PHYSICS, options.physics || {});
 
             currentTask.diceSpecs = [];
             for (let i = 0; i < count; i++) {
@@ -425,6 +450,7 @@
 
             initEngine();
             world.gravity.set(0, currentTask.physics.gravity, 0);
+            floorContactMaterial.restitution = currentTask.physics.restitution;
             setupDice(currentTask.diceSpecs);
             onResize();
         },
@@ -473,10 +499,13 @@
                 total: currentTask.total
             };
 
-            if (typeof currentTask.onComplete === 'function') {
-                currentTask.onComplete(resultData);
+            try {
+                if (typeof currentTask.onComplete === 'function') {
+                    currentTask.onComplete(resultData);
+                }
+            } finally {
+                this.close();
             }
-            this.close();
         },
 
         close: function () {
@@ -484,6 +513,15 @@
             if (overlay) overlay.classList.add('dr-hidden');
             isRolling = false;
             if (rollCheckTimeout) clearTimeout(rollCheckTimeout);
+            rollCheckTimeout = null;
+            if (animationFrameId !== null) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+            if (resizeListenerAttached) {
+                window.removeEventListener('resize', onResize);
+                resizeListenerAttached = false;
+            }
         }
     };
 })(window);
