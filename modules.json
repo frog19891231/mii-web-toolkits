@@ -1,6 +1,7 @@
 {
 "modules": [
     "dice-roller",
-    "card-clash"
+    "card-clash",
+    "text-adventure"
 ]
 }

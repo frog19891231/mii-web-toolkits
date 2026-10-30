@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>text-adventure 獨立預覽頁</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Fredoka', 'Noto Sans TC', sans-serif; background-color: #f3f0e6; }
+  </style>
+</head>
+<body class="bg-amber-50 min-h-screen text-slate-800 p-4 md:p-8">
+
+  <div class="max-w-4xl mx-auto space-y-6">
+    <header class="text-center space-y-2">
+      <h1 class="text-3xl md:text-4xl font-extrabold text-amber-900 tracking-wide">
+        📖 文字冒險小引擎 (`text-adventure`)
+      </h1>
+      <p class="text-slate-600 font-medium">獨立預覽與測試頁面</p>
+    </header>
+
+    <div class="bg-white rounded-2xl border-4 border-slate-900 shadow-[8px_8px_0px_#0f172a] p-6 space-y-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b-2 border-dashed border-slate-200">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">劇本即時測試編輯器</h2>
+          <p class="text-xs text-slate-500">修改下方劇本後點擊按鈕即可預覽演出效果</p>
+        </div>
+        <button id="run-btn" class="w-full md:w-auto bg-amber-400 hover:bg-amber-300 text-slate-900 font-black text-lg px-6 py-3 rounded-xl border-3 border-slate-900 shadow-[4px_4px_0px_#0f172a] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <span>🚀 啟動 TextAdventure.open()</span>
+        </button>
+      </div>
+
+      <textarea id="script-input" rows="12" class="w-full p-4 font-mono text-sm bg-slate-900 text-emerald-400 border-3 border-slate-900 rounded-xl focus:outline-none focus:ring-4 focus:ring-amber-400 shadow-inner resize-y">
+@label start
+[text] 你睜開眼睛，發現自己站在一座荒廢城堡的迴廊中，四周佈滿濃霧。
+@choice "嘗試推開鐵門" -> iron_door
+@choice "沿著左側階梯往下" -> basement_path
+
+@label iron_door
+[text] 你用力推了推鐵門，門吱呀作響但牢牢鎖住了。
+@goto start
+
+@label basement_path
+[text] 階梯盡頭是一個石室，中央擺放著一個散發藍光的古木寶箱。
+[text] 你打開寶箱，成功獲得了傳送符石！
+@goto end
+
+@label end
+[text] 恭喜你順利完成了這段冒險體驗！
+</textarea>
+    </div>
+  </div>
+
+  <!-- 載入模組腳本 -->
+  <script src="./text-adventure.js"></script>
+  <script>
+    document.getElementById('run-btn').addEventListener('click', () => {
+      const scriptText = document.getElementById('script-input').value;
+      window.TextAdventure.open({
+        title: '🗡️ 預覽頁測試',
+        script: scriptText,
+        onComplete: (result) => {
+          console.log('測試完成，結果：', result);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
